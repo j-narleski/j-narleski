@@ -5,3 +5,29 @@ date: "2025-03-18"
 output: pdf_document
 ---
 
+# Setup
+
+```{r}
+
+library(tidyverse)
+library(here)
+library(naniar)
+library(DHARMa)
+library(gtsummary)
+library(broom)
+
+lizards <- read.csv("jrn_lizard.csv")
+lizard_npp <- read.csv("jrn_lizard_npp.csv")
+
+```
+
+# Logistic Regression
+
+## Data Tidying
+
+```{r}
+
+lizards <- lizards %>%
+  filter(spp == "UTST")
+```
+
