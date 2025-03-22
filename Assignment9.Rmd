@@ -71,3 +71,72 @@ lizards <- lizards %>%
 
 ```
 
+## Fit Regression Model
+
+```{r}
+
+lizards$sex <- factor(lizards$sex, 
+                      levels = c("F", "J", "M", "NA"))
+
+lizards$zone <- factor(lizards$zone,
+                       levels = c("C", "G", "M", "T"))
+
+lizards$tail <- factor(lizards$tail,
+                       levels = c("B", "W", "NA"))
+
+tail_mod <- glm(tail ~ SV_length + zone + sex, 
+                data = lizards,
+                family = "binomial")
+
+summary(tail_mod)
+
+simulateResiduals(tail_mod) %>% plot()
+
+```
+
+# Poisson Regression
+
+Do season and plant species percent cover significantly predict lizard counts?
+
+```{r}
+
+(hist8 <- ggplot(data = lizard_npp, aes(x = season)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist9 <- ggplot(data = lizard_npp, aes(x = BOER)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist10 <- ggplot(data = lizard_npp, aes(x = LATR)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist11 <- ggplot(data = lizard_npp, aes(x = PRGL)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist12 <- ggplot(data = lizard_npp, aes(x = SCBR)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist13 <- ggplot(data = lizard_npp, aes = lizard_count)) +
+  geom_histogram(na.rm = TRUE)
+
+(hist12 <- ggplot(data = lizards, aes(x = SV_length,
+                                            fill = tail)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist13 <- ggplot(data = lizards, aes(x = sex,
+                                            fill = tail)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist14 <- ggplot(data = lizards, aes(x = zone,
+                                            fill = tail)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+```
+
