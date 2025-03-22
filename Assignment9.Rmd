@@ -23,11 +23,51 @@ lizard_npp <- read.csv("jrn_lizard_npp.csv")
 
 # Logistic Regression
 
+Do snout-to-vent length, sex, and vegetation zone at time of capture significantly predict if a lizard tail is recorded as whole?
+
 ## Data Tidying
 
 ```{r}
 
 lizards <- lizards %>%
   filter(spp == "UTST")
+
+```
+
+## Examine Data
+
+```{r}
+
+(hist1 <- ggplot(data = lizards, aes(x = SV_length)) +
+    geom_histogram() +
+    theme_bw())
+
+(hist2 <- ggplot(data = lizards, aes(x = sex)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist3 <- ggplot(data = lizards, aes(x = zone)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist4 <- ggplot(data = lizards, aes(x = tail)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist5 <- ggplot(data = lizards, aes(x = SV_length,
+                                            fill = tail)) +
+    geom_histogram(na.rm = TRUE) +
+    theme_bw())
+
+(hist6 <- ggplot(data = lizards, aes(x = sex,
+                                            fill = tail)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
+(hist7 <- ggplot(data = lizards, aes(x = zone,
+                                            fill = tail)) +
+    geom_histogram(stat = "count", na.rm = TRUE) +
+    theme_bw())
+
 ```
 
