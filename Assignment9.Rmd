@@ -9,6 +9,7 @@ output: pdf_document
 
 ```{r}
 
+# Load necessary packages
 library(tidyverse)
 library(here)
 library(naniar)
@@ -16,6 +17,7 @@ library(DHARMa)
 library(gtsummary)
 library(broom)
 
+# Read csvs
 lizards <- read.csv("jrn_lizard.csv")
 lizard_npp <- read.csv("jrn_lizard_npp.csv")
 
@@ -29,6 +31,7 @@ Do snout-to-vent length, sex, and vegetation zone at time of capture significant
 
 ```{r}
 
+# Filter dataset
 lizards <- lizards %>%
   filter(spp == "UTST")
 
@@ -38,6 +41,7 @@ lizards <- lizards %>%
 
 ```{r}
 
+# Create exploratory figures for each variable
 (hist1 <- ggplot(data = lizards, aes(x = SV_length)) +
     geom_histogram() +
     theme_bw())
@@ -54,6 +58,7 @@ lizards <- lizards %>%
     geom_histogram(stat = "count", na.rm = TRUE) +
     theme_bw())
 
+# Create exploratory figures between variables
 (hist5 <- ggplot(data = lizards, aes(x = SV_length,
                                             fill = tail)) +
     geom_histogram(na.rm = TRUE) +
@@ -75,6 +80,7 @@ lizards <- lizards %>%
 
 ```{r}
 
+# Turn character vectors into factors
 lizards$sex <- factor(lizards$sex, 
                       levels = c("F", "J", "M", "NA"))
 
@@ -84,64 +90,117 @@ lizards$zone <- factor(lizards$zone,
 lizards$tail <- factor(lizards$tail,
                        levels = c("B", "W", "NA"))
 
+# Fit regression model
 tail_mod <- glm(tail ~ SV_length + zone + sex, 
                 data = lizards,
                 family = "binomial")
 
+# Summary of regression model
 summary(tail_mod)
 
+# Simulate residuals in plot form 
 simulateResiduals(tail_mod) %>% plot()
 
 ```
+## Create Prediction Model
 
 ```{r}
 
+# Create vector of snout-to-vent lengths
 svlength_vector <- rep(seq(from = 0, to = 50), 4)
 
+# Vector of sex categories
 sex_vector <- c(rep("F", 51),
                  rep("M", 51),
                  rep("J", 51),
-                 rep("NA", 51))
+                 rep(NA, 51))
 
+# Vector of zone categories
 zone_vector <- c(rep("C", 51),
                  rep("G", 51),
                  rep("M", 51),
                  rep("T", 51))
 
+# Generate data frame
 data_pred <- data.frame(svlength_vector, sex_vector, zone_vector)
+# Name columns
 colnames(data_pred) <- c("SV_length", "sex", "zone")
 
+# Generate prediction model
 prediction <- predict(tail_mod,
                       newdata = data_pred,
                       type = "response",
                       se.fit = TRUE)
 
+# Generate data frame of predictions
 data_fig <- data.frame(data_pred,
                        prediction$fit,
                        prediction$se.fit)
-
+# Name columns
 colnames(data_fig) <- c("SV_length", 
                         "Sex", "Zone", "probability", "se")
 
-ggplot(data_fig, aes(x = SV_length,
+# Generate plot for with zone coloring
+zoneplot <- ggplot(data_fig, aes(x = SV_length,
                      y = probability)) +
   geom_line(aes(color = Zone)) +
   geom_ribbon(aes(ymin = probability - se,
                   ymax = probability + se,
                   fill = Zone), alpha = 0.3) +
-  labs(x = "Temperature (degrees C)",
-       y = "Probability of Hypoxia",
-       color = "Season",
-       fill = "Season") +
+  labs(x = "Snout-to-Vent Length",
+       y = "Probability of Whole Tail",
+       color = "Zone",
+       fill = "Zone") +
+  scale_color_manual(values = c("chartreuse3", "darkolivegreen3", "yellow3", 
+                                "palegreen3"),
+                     labels = c("Black Grama Grassland", 
+                                "Creosotebush Shrubland",
+                                "Mesquite Duneland", "Tarbush Shrubland")) +
+  scale_fill_manual(values = c("greenyellow", "darkolivegreen", "yellow4", 
+                                "palegreen3"),
+                    labels = c("Black Grama Grassland", 
+                               "Creosotebush Shrubland",
+                               "Mesquite Duneland", "Tarbush Shrubland")) +
   theme_bw()
+
+# View plot
+zoneplot
+
+# Generate plot for sex coloring
+sexplot <- ggplot(data_fig, aes(x = SV_length,
+                                y = probability)) + 
+  geom_line(aes(color = Sex)) +
+  geom_ribbon(aes(ymin = probability - se,
+                  ymax = probability + se,
+                  fill = Sex), alpha = 0.3) +
+  labs(x = "Snout-to-Vent Length",
+       y = "Probability of Whole Tail",
+       color = "Sex",
+       fill = "Sex") +
+    scale_color_manual(values = c("violetred3", "purple3", "gold3", 
+                                "snow3"),
+                     labels = c("Female", "Male","J", "No Data")) +
+    scale_fill_manual(values = c("violetred3", "purple3", "gold3", 
+                                "snow3"),
+                     labels = c("Female", "Male","J", "No Data")) +
+  theme_bw()
+
+# View plot 
+sexplot
 ```
+## Intepret Models
+
+The results of a logistic regression suggest that the odds of a lizard having a whole tail are greater when the snout-to-vent length is lower () and the lizard is located in the black grama grassland () or tarbush shrubland () zone.
 
 # Poisson Regression
 
 Do season and plant species percent cover significantly predict lizard counts?
 
+## Examine Data
+
 ```{r}
 
+# Generate exploratory plots for each visual
 (hist8 <- ggplot(data = lizard_npp, aes(x = season)) +
     geom_histogram(stat = "count", na.rm = TRUE) +
     theme_bw())
@@ -171,22 +230,28 @@ Do season and plant species percent cover significantly predict lizard counts?
 
 ```{r}
 
+# Make season characters into factors
 lizard_npp$season <- factor(lizard_npp$season, 
                       levels = c("F", "W", "S"))
 
+# Fit regression model
 lizard_nppmod <- glm(lizard_count ~ season + BOER + LATR + PRGL + SCBR,
                 data = lizard_npp,
                 family = "poisson")
 
+# View summary
 summary(lizard_nppmod)
+# View plots
 plot(lizard_nppmod)
 
 # Remove more outlier rows
 lizard_npp2 <- lizard_npp[-c(32, 47, 50, 1),]
 
+# Fit other regression model(s) and view summary/plots
 lizard_nppmod2 <- glm(lizard_count ~ season + BOER + LATR + PRGL + SCBR,
                 data = lizard_npp2,
                 family = "poisson")
+
 
 summary(lizard_nppmod2)
 plot(lizard_nppmod2)
@@ -205,8 +270,10 @@ lizard_nppmod4 <- glm(lizard_count ~ season + BOER + PRGL + SCBR,
 summary(lizard_nppmod4)
 plot(lizard_nppmod4)
 
-tbl_regression(lizard_nppmod4)
+# This fourth model has the best significance and AIC
 
+# View regression p-values and confidence intervals 
+tbl_regression(lizard_nppmod4)
 
 ```
 
