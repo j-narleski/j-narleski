@@ -190,7 +190,7 @@ sexplot
 ```
 ## Intepret Models
 
-The results of a logistic regression suggest that the odds of a lizard having a whole tail are greater when the snout-to-vent length is lower () and the lizard is located in the black grama grassland () or tarbush shrubland () zone.
+The results of a logistic regression suggest that the odds of a lizard having a whole tail are greater when the snout-to-vent length is lower (beta = -0.04523, p < 0.01) and the lizard is less likely to be located in the black grama grassland (beta = -0.56537, p = 0.001) or the tarbush shrubland (beta = -0.40435, p < 0.05) zones.
 
 # Poisson Regression
 
@@ -277,3 +277,6 @@ tbl_regression(lizard_nppmod4)
 
 ```
 
+## Interpret Models
+
+The results of a Poisson regression show that lizard counts are lower in the summer (beta = -0.82462, p < 0.01), lower in BOER (beta = -0.05221, p < 0.05), and higher in PRGL (beta = 0.13224, p < 0.01) an in SCBR (beta = 0.43805, p < 0.01). 
