@@ -1,7 +1,7 @@
 ---
 title: "Assignment 9"
 author: "Jaclyn Narleski"
-date: "2025-03-18"
+date: "2025-03-20"
 output: pdf_document
 ---
 
@@ -105,24 +105,22 @@ simulateResiduals(tail_mod) %>% plot()
 ## Create Prediction Model
 
 ```{r}
-
 # Create vector of snout-to-vent lengths
-svlength_vector <- rep(seq(from = 0, to = 50), 4)
+svlength_vector <- rep(seq(from = 0, to = 100), 4)
 
 # Vector of sex categories
-sex_vector <- c(rep("F", 51),
-                 rep("M", 51),
-                 rep("J", 51),
-                 rep(NA, 51))
+sex_vector <- c(rep("F", 101),
+                rep("M", 101),
+                rep("J", 101),
+                rep(NA, 101))
 
 # Vector of zone categories
-zone_vector <- c(rep("C", 51),
-                 rep("G", 51),
-                 rep("M", 51),
-                 rep("T", 51))
+zone_vector2 <- c("G", "C", "M", "T")
+# Randomize
+zone_vector_random <- sample(zone_vector2, size = 404, replace = TRUE)
 
 # Generate data frame
-data_pred <- data.frame(svlength_vector, sex_vector, zone_vector)
+data_pred <- data.frame(svlength_vector, sex_vector, zone_vector_random)
 # Name columns
 colnames(data_pred) <- c("SV_length", "sex", "zone")
 
@@ -147,7 +145,7 @@ zoneplot <- ggplot(data_fig, aes(x = SV_length,
   geom_ribbon(aes(ymin = probability - se,
                   ymax = probability + se,
                   fill = Zone), alpha = 0.3) +
-  labs(x = "Snout-to-Vent Length",
+  labs(x = "Snout-to-Vent Length (cm)",
        y = "Probability of Whole Tail",
        color = "Zone",
        fill = "Zone") +
@@ -165,15 +163,49 @@ zoneplot <- ggplot(data_fig, aes(x = SV_length,
 
 # View plot
 zoneplot
+```
+
+
+```{r}
+
+# Vector of sex categories
+sex_vector2 <- c("F", "M", "J", NA)
+# Randomize
+sex_vector_random <- sample(sex_vector2, size = 404, replace = TRUE)
+
+# Vector of zone categories
+zone_vector <- c(rep("C", 101),
+                 rep("G", 101),
+                 rep("M", 101),
+                 rep("T", 101))
+
+# Generate data frame
+data_pred2 <- data.frame(svlength_vector, sex_vector_random, zone_vector_random)
+# Name columns
+colnames(data_pred2) <- c("SV_length", "sex", "zone")
+
+# Generate prediction model
+prediction <- predict(tail_mod,
+                      newdata = data_pred2,
+                      type = "response",
+                      se.fit = TRUE)
+
+# Generate data frame of predictions
+data_fig2 <- data.frame(data_pred2,
+                       prediction$fit,
+                       prediction$se.fit)
+# Name columns
+colnames(data_fig2) <- c("SV_length", 
+                        "Sex", "Zone", "probability", "se")
 
 # Generate plot for sex coloring
-sexplot <- ggplot(data_fig, aes(x = SV_length,
+sexplot <- ggplot(data_fig2, aes(x = SV_length,
                                 y = probability)) + 
   geom_line(aes(color = Sex)) +
   geom_ribbon(aes(ymin = probability - se,
                   ymax = probability + se,
                   fill = Sex), alpha = 0.3) +
-  labs(x = "Snout-to-Vent Length",
+  labs(x = "Snout-to-Vent Length (cm)",
        y = "Probability of Whole Tail",
        color = "Sex",
        fill = "Sex") +
@@ -187,6 +219,7 @@ sexplot <- ggplot(data_fig, aes(x = SV_length,
 
 # View plot 
 sexplot
+
 ```
 ## Intepret Models
 
