@@ -148,7 +148,10 @@ zoneplot <- ggplot(data_fig, aes(x = SV_length,
   labs(x = "Snout-to-Vent Length (cm)",
        y = "Probability of Whole Tail",
        color = "Zone",
-       fill = "Zone") +
+       fill = "Zone",
+       title = "Prediction Model for Likelihood of Whole Tail Based on Zone",
+       caption = "This figure displays the probability of a lizard having a 
+       whole tail based on its snout-to-vent length and habitat zone.") +
   scale_color_manual(values = c("chartreuse3", "darkolivegreen3", "yellow3", 
                                 "palegreen3"),
                      labels = c("Black Grama Grassland", 
@@ -159,7 +162,8 @@ zoneplot <- ggplot(data_fig, aes(x = SV_length,
                     labels = c("Black Grama Grassland", 
                                "Creosotebush Shrubland",
                                "Mesquite Duneland", "Tarbush Shrubland")) +
-  theme_bw()
+  theme_bw() +
+  theme(plot.caption = element_text(hjust = 0.5))
 
 # View plot
 zoneplot
@@ -208,14 +212,18 @@ sexplot <- ggplot(data_fig2, aes(x = SV_length,
   labs(x = "Snout-to-Vent Length (cm)",
        y = "Probability of Whole Tail",
        color = "Sex",
-       fill = "Sex") +
+       fill = "Sex",
+       title = "Prediction Model of Whole Tail Based on Sex",
+       caption = "This figure displays the probability of a lizard having a 
+       whole tail based on its snout-to-vent length and sex.") +
     scale_color_manual(values = c("violetred3", "purple3", "gold3", 
                                 "snow3"),
                      labels = c("Female", "Male","J", "No Data")) +
     scale_fill_manual(values = c("violetred3", "purple3", "gold3", 
                                 "snow3"),
                      labels = c("Female", "Male","J", "No Data")) +
-  theme_bw()
+  theme_bw() +
+  theme(plot.caption = element_text(hjust = 0.5))
 
 # View plot 
 sexplot
@@ -254,8 +262,9 @@ Do season and plant species percent cover significantly predict lizard counts?
     geom_histogram(na.rm = TRUE) +
     theme_bw())
 
-(hist13 <- ggplot(data = lizard_npp, aes = lizard_count)) +
-  geom_histogram(na.rm = TRUE)
+(hist13 <- ggplot(data = lizard_npp, aes(x = lizard_count)) +
+  geom_histogram(na.rm = TRUE) +
+  theme_bw())
 
 ```
 
