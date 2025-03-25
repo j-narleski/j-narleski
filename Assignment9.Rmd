@@ -312,4 +312,4 @@ tbl_regression(lizard_nppmod4)
 
 ## Interpret Models
 
-The results of a Poisson regression show that lizard counts are lower in the summer (beta = -0.82462, p < 0.01), lower in BOER (beta = -0.05221, p < 0.05), and higher in PRGL (beta = 0.13224, p < 0.01) and in SCBR (beta = 0.43805, p < 0.01). There was not a strong correlation between lizard counts and the winter season (beta = 0.10777, p = 0.15).
+The results of a Poisson regression show that lizard counts are lower in the summer (beta = -0.82462, p < 0.01), lower in BOER (beta = -0.05221, p < 0.05), and higher in PRGL (beta = 0.13224, p < 0.01) and in SCBR (beta = 0.43805, p < 0.01). There was not a strong correlation between lizard counts and the winter season (beta = 0.10777, p = 0.15). To perform this regression, 4 rows of outliers were removed since they were well out of the range of the expected regression based on the plot visuals of prior Poisson regression models.
